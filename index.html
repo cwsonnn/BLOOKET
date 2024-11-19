@@ -1,0 +1,168 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Blooket-like Quiz Game</title>
+  <style>
+    body {
+      font-family: 'Arial', sans-serif;
+      background-color: #f4f4f9;
+      margin: 0;
+      padding: 0;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      height: 100vh;
+    }
+
+    #game-container {
+      text-align: center;
+      background: white;
+      border-radius: 8px;
+      box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+      padding: 20px;
+      width: 100%;
+      max-width: 500px;
+    }
+
+    #quiz-container {
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+    }
+
+    #question-container {
+      margin-bottom: 20px;
+    }
+
+    #options-container {
+      display: flex;
+      flex-direction: column;
+    }
+
+    button {
+      padding: 10px;
+      margin: 5px;
+      background-color: #3498db;
+      color: white;
+      border: none;
+      border-radius: 5px;
+      cursor: pointer;
+      font-size: 16px;
+    }
+
+    button:hover {
+      background-color: #2980b9;
+    }
+
+    button.hidden {
+      display: none;
+    }
+
+    #result-container {
+      display: none;
+    }
+  </style>
+</head>
+<body>
+  <div id="game-container">
+    <h1>Blooket-like Quiz Game</h1>
+    <div id="quiz-container">
+      <div id="question-container">
+        <p id="question">Loading Question...</p>
+      </div>
+      <div id="options-container">
+        <!-- Dynamic options will go here -->
+      </div>
+      <button id="next-button" class="hidden">Next Question</button>
+    </div>
+    <div id="result-container" class="hidden">
+      <h2>Game Over!</h2>
+      <p>Your Score: <span id="score"></span></p>
+      <button onclick="startGame()">Restart Game</button>
+    </div>
+  </div>
+
+  <script>
+    // Quiz data
+    const quizQuestions = [
+      {
+        question: "What is the capital of France?",
+        options: ["Berlin", "Madrid", "Paris", "Rome"],
+        correctAnswer: "Paris",
+      },
+      {
+        question: "Which planet is known as the Red Planet?",
+        options: ["Earth", "Mars", "Jupiter", "Venus"],
+        correctAnswer: "Mars",
+      },
+      {
+        question: "What is the largest ocean on Earth?",
+        options: ["Atlantic Ocean", "Indian Ocean", "Pacific Ocean", "Arctic Ocean"],
+        correctAnswer: "Pacific Ocean",
+      },
+      // Add more questions as needed
+    ];
+
+    let currentQuestionIndex = 0;
+    let score = 0;
+
+    // Function to start the game
+    function startGame() {
+      currentQuestionIndex = 0;
+      score = 0;
+      document.getElementById("result-container").classList.add("hidden");
+      document.getElementById("quiz-container").classList.remove("hidden");
+      loadQuestion();
+    }
+
+    // Function to load a question
+    function loadQuestion() {
+      if (currentQuestionIndex >= quizQuestions.length) {
+        endGame();
+        return;
+      }
+
+      const currentQuestion = quizQuestions[currentQuestionIndex];
+      document.getElementById("question").textContent = currentQuestion.question;
+      const optionsContainer = document.getElementById("options-container");
+      optionsContainer.innerHTML = ''; // Clear previous options
+
+      currentQuestion.options.forEach(option => {
+        const button = document.createElement("button");
+        button.textContent = option;
+        button.onclick = () => checkAnswer(option);
+        optionsContainer.appendChild(button);
+      });
+    }
+
+    // Function to check the selected answer
+    function checkAnswer(selectedOption) {
+      const currentQuestion = quizQuestions[currentQuestionIndex];
+      if (selectedOption === currentQuestion.correctAnswer) {
+        score++;
+      }
+
+      currentQuestionIndex++;
+      document.getElementById("next-button").classList.remove("hidden");
+    }
+
+    // Function to end the game and show the result
+    function endGame() {
+      document.getElementById("quiz-container").classList.add("hidden");
+      document.getElementById("result-container").classList.remove("hidden");
+      document.getElementById("score").textContent = score;
+    }
+
+    // Event listener for next button
+    document.getElementById("next-button").addEventListener("click", () => {
+      loadQuestion();
+      document.getElementById("next-button").classList.add("hidden");
+    });
+
+    // Start the game when the page loads
+    startGame();
+  </script>
+</body>
+</html>
